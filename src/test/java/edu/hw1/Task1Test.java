@@ -50,7 +50,7 @@ public class Task1Test {
         };
 
         for (String input : incorrectInputs) {
-            assertEquals(Task1.INVALID_DURATION, Task1.minutesToSeconds(input));
+            assertEquals(Task1.INVALID_NUMBER, Task1.minutesToSeconds(input));
         }
     }
     @Test
@@ -67,7 +67,7 @@ public class Task1Test {
 
         for (String duration : durationsWithIncorrectDelimiters) {
             long seconds = Task1.minutesToSeconds(duration);
-            assertThat(seconds).isEqualTo(Task1.INVALID_DURATION);
+            assertThat(seconds).isEqualTo(Task1.INVALID_NUMBER);
         }
     }
     @Test
@@ -83,7 +83,7 @@ public class Task1Test {
 
         for (String duration : durationsOnlyDelimiters) {
             long seconds = Task1.minutesToSeconds(duration);
-            assertThat(seconds).isEqualTo(Task1.INVALID_DURATION);
+            assertThat(seconds).isEqualTo(Task1.INVALID_NUMBER);
         }
     }
     @Test

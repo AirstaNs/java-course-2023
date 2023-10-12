@@ -61,7 +61,7 @@ public class Task6Test {
 
         for (int input : inputs) {
             int i = Task6.countK(input);
-            assertEquals(Task6.INVALID_NUMBER, i);
+            assertEquals(Task1.INVALID_NUMBER, i);
         }
     }
 }

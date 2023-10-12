@@ -1,7 +1,6 @@
 package edu.hw1;
 
 public final class Task7 {
-    public static final int INVALID_NUMBER = -1;
 
     private Task7() {
     }
@@ -16,7 +15,7 @@ public final class Task7 {
 
     private static int rotate(int number, int shift, boolean isLeft) {
         if (!isValid(number, shift)) {
-            return INVALID_NUMBER;
+            return Task1.INVALID_NUMBER;
         }
 
         int bitCount = countActiveBits(number);

@@ -55,8 +55,8 @@ public class Task7Test {
         };
 
         for (int i = 0; i < numbers.length; i++) {
-            assertEquals(Task7.INVALID_NUMBER, Task7.rotateRight(numbers[i], shifts[i]));
-            assertEquals(Task7.INVALID_NUMBER, Task7.rotateLeft(numbers[i], shifts[i]));
+            assertEquals(Task1.INVALID_NUMBER, Task7.rotateRight(numbers[i], shifts[i]));
+            assertEquals(Task1.INVALID_NUMBER, Task7.rotateLeft(numbers[i], shifts[i]));
         }
     }
 

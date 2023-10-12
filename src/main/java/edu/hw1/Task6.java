@@ -3,7 +3,6 @@ package edu.hw1;
 import java.util.Arrays;
 
 public final class Task6 {
-    public static final int INVALID_NUMBER = -1;
     public static final int KAPREKAR_CONSTANT = 6174;
     private static final int MIN_BORDER = 1000;
     private static final int MAX_BORDER = 9999;
@@ -13,7 +12,7 @@ public final class Task6 {
 
     public static int countK(int num) {
         if (num <= MIN_BORDER || num > MAX_BORDER) {
-            return INVALID_NUMBER;
+            return Task1.INVALID_NUMBER;
         } else if (num == KAPREKAR_CONSTANT) {
             return 0;
         }
@@ -25,7 +24,7 @@ public final class Task6 {
         int largerNumber = Integer.parseInt(String.valueOf(digits));
         // проверяем что не все цифры одинаковы
         if (lowerNumber == largerNumber) {
-            return INVALID_NUMBER;
+            return Task1.INVALID_NUMBER;
         }
         return 1 + countK(largerNumber - lowerNumber);
     }

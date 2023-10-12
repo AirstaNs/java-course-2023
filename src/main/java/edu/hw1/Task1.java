@@ -4,7 +4,7 @@ import java.util.Objects;
 
 public final class Task1 {
 
-    public static final int INVALID_DURATION = -1;
+    public static final int INVALID_NUMBER = -1;
     private static final String DELIMITER = ":";
     private static final long MAX_SECONDS_PER_MINUTE = 60;
 
@@ -15,18 +15,18 @@ public final class Task1 {
         Objects.requireNonNull(s);
         // если строка не содержит разделителя, в нашем случае ":", то сразу возвращаем -1
         if (!s.contains(DELIMITER)) {
-            return INVALID_DURATION;
+            return INVALID_NUMBER;
         }
 
         String[] parts = s.split(DELIMITER);
         // если разделенная строка не содержит двух частей - секунд и минут, то возвращаем -1
         if (parts.length != 2) {
-            return INVALID_DURATION;
+            return INVALID_NUMBER;
         }
 
         // Проверяем, состоят ли обе части только из цифр
         if (!arePartsDigits(parts)) {
-            return INVALID_DURATION;
+            return INVALID_NUMBER;
         }
 
         return calculateTotalSeconds(parts);
@@ -38,7 +38,7 @@ public final class Task1 {
 
         // если кол-во секунд больше или равно 60, то возвращаем -1
         if (seconds >= MAX_SECONDS_PER_MINUTE) {
-            return INVALID_DURATION;
+            return INVALID_NUMBER;
         }
         return minutes * MAX_SECONDS_PER_MINUTE + seconds;
     }
