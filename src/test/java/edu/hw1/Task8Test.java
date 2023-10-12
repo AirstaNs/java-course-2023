@@ -114,6 +114,15 @@ public class Task8Test {
         assertThrows(IllegalArgumentException.class, () -> Task8.knightBoardCapture(testBoard));
     }
     @Test
+    @DisplayName("Проверка неверного формата доски, размером 8x7")
+    public void shouldReturnFalseForZeroEightBySevenBoard() {
+        int[][] testBoard = new int[Task8.BOARD_SIZE][7];
+        for (int i = 0; i < 7; i++) {
+            Arrays.fill(testBoard[i], Task8.EMPTY);
+        }
+        assertThrows(IllegalArgumentException.class, () -> Task8.knightBoardCapture(testBoard));
+    }
+    @Test
     @DisplayName("Проверка неверного формата доски, размером 7x8, полностью заполненной конями")
     public void shouldReturnFalseForIncorrectSevenByEightBoard() {
         int[][] testBoard = new int[7][Task8.BOARD_SIZE];
