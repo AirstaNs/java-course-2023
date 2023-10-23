@@ -6,16 +6,16 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class Task0Test {
 
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final PrintStream originalOut = System.out;
-
     @BeforeEach
     public void setUpStreams() {
-        System.setOut(new PrintStream(outContent));
+        System.setOut(new PrintStream(outContent, true, StandardCharsets.UTF_8));
     }
 
     @AfterEach
@@ -29,6 +29,9 @@ public class Task0Test {
         String input = "Привет, мир!";
         Task0.printHelloWorld();
 
-        assertTrue(outContent.toString().contains(input));
+        String actualOutput = outContent.toString(StandardCharsets.UTF_8).trim();
+        System.out.println("Actual output: '" + actualOutput + "'");
+        assertTrue(actualOutput.contains(input));
     }
+
 }
