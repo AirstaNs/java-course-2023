@@ -23,7 +23,7 @@ public class ConsoleHangman implements AutoCloseable {
         this.word = word;
         this.player = player;
 
-        printer.printWelcomeMessage();
+        printer.printWelcomeMessage(word.getCurrentState());
 
         while (!word.isGuessed() && !player.hasLost()) {
             String input = getUserInput();
