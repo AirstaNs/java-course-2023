@@ -12,6 +12,7 @@ public class GameMessagesPrinter {
     public static final String WIN_MESSAGE = "Congratulations! You guessed the word: %s";
     public static final String LOSS_MESSAGE = "Sorry, you lost! The word was: %s";
     public static final String INVALID_INPUT = "Invalid input. Enter a single letter. Try again.";
+    public static final String LETTER_ALREADY_MESSAGE = "You've already tried the letter '%s'. Please choose another.";
     private final Logger logger;
 
     public GameMessagesPrinter(Logger logger) {
@@ -48,5 +49,9 @@ public class GameMessagesPrinter {
 
     public void printInvalidInput() {
         logger.error(INVALID_INPUT);
+    }
+
+    public void printLetterAlreadyTriedMessage(char letter) {
+        logger.warn(LETTER_ALREADY_MESSAGE.formatted(letter));
     }
 }

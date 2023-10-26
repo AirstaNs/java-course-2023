@@ -56,6 +56,12 @@ public class ConsoleHangman implements AutoCloseable {
     }
 
     public void guessLetter(char letter) {
+        // Если буква уже была введена ранее
+        if (word.wasLetterTriedBefore(letter)) {
+            printer.printLetterAlreadyTriedMessage(letter);
+            return;
+        }
+
         if (word.guess(letter)) {
             printer.printCorrectGuess(word.getCurrentState());
         } else {

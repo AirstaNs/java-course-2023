@@ -1,17 +1,22 @@
 package edu.project1.model;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Word {
     private final char[] actualWord;
     private final char[] representation;
     private final char hiddenSymbol;
 
+    private final Set<Character> triedLetters;
+
     public Word(String actualWord, char hiddenSymbol) {
         this.checkLengthWord(actualWord);
         this.actualWord = actualWord.toLowerCase().toCharArray();
         this.hiddenSymbol = hiddenSymbol;
         this.representation = new char[actualWord.length()];
+        triedLetters = new HashSet<>();
         Arrays.fill(representation, hiddenSymbol);
     }
 
@@ -23,7 +28,6 @@ public class Word {
 
     public boolean guess(Character letter) {
         char lowerLetter = Character.toLowerCase(letter);
-
         boolean isLetterPresent = false;
         for (int i = 0; i < actualWord.length; i++) {
             if (actualWord[i] == lowerLetter && representation[i] == hiddenSymbol) {
@@ -31,6 +35,9 @@ public class Word {
                 isLetterPresent = true;
             }
         }
+
+        // Добавляем букву в множество введенных букв
+        triedLetters.add(lowerLetter);
         return isLetterPresent;
     }
 
@@ -41,6 +48,10 @@ public class Word {
             }
         }
         return true; // Все символы угаданы
+    }
+
+    public boolean wasLetterTriedBefore(char letter) {
+        return triedLetters.contains(Character.toLowerCase(letter));
     }
 
     public String getActualWord() {
