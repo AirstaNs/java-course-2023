@@ -6,15 +6,17 @@ import edu.project1.model.Word;
 import java.util.List;
 import java.util.Scanner;
 
-public class ConsoleHangman {
+public class ConsoleHangman implements AutoCloseable {
     private final List<GameAction> actions;
     private final GameMessagesPrinter printer;
+    private final Scanner scanner;
     private Word word;
     private Player player;
 
-    public ConsoleHangman(List<GameAction> actions, GameMessagesPrinter printer) {
+    public ConsoleHangman(List<GameAction> actions, GameMessagesPrinter printer, Scanner scanner) {
         this.actions = actions;
         this.printer = printer;
+        this.scanner = scanner;
     }
 
     public void start(Word word, Player player) {
@@ -38,7 +40,6 @@ public class ConsoleHangman {
 
     private String getUserInput() {
         printer.printRequestInput();
-        Scanner scanner = new Scanner(System.in);
         return scanner.nextLine().trim();
     }
 
@@ -65,5 +66,10 @@ public class ConsoleHangman {
 
     public void exit() {
         player.loseGame(); // назначение 0 действующих попыток
+    }
+
+    @Override
+    public void close() {
+        scanner.close();
     }
 }

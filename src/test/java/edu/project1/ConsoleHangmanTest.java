@@ -8,6 +8,7 @@ import edu.project1.model.Player;
 import edu.project1.model.Word;
 import java.util.List;
 import java.util.Random;
+import java.util.Scanner;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,18 +20,19 @@ public class ConsoleHangmanTest {
     private static final char HIDDEN_SYMBOL = '.';
     private static final Logger LOGGER = LogManager.getLogger();
     private static final Random RANDOM = new Random();
+    private static final Scanner scanner = new Scanner(System.in);
     private ConsoleHangman game;
     private Player player;
     private Word word;
 
     @BeforeEach
     public void setUp() {
-        GameConfiguration config = new GameConfiguration(HIDDEN_SYMBOL, RANDOM);
+        GameConfiguration config = new GameConfiguration(HIDDEN_SYMBOL, RANDOM, scanner);
         List<GameAction> gameActions = config.configureActions();
         word = config.configureWord();
 
         GameMessagesPrinter printer = new GameMessagesPrinter(LOGGER);
-        game = new ConsoleHangman(gameActions, printer);
+        game = new ConsoleHangman(gameActions, printer, config.getScanner());
         player = new Player(MAX_ATTEMPTS);
     }
 

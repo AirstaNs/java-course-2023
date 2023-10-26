@@ -8,6 +8,7 @@ import edu.project1.store.StaticWordStore;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Scanner;
 
 // Класс для упрощения конфигурации игры,
 // включая создание списка действий и выбор случайного слова для угадывания
@@ -16,9 +17,12 @@ public class GameConfiguration {
 
     private final Random random;
 
-    public GameConfiguration(char hiddenSymbol, Random random) {
+    private final Scanner scanner;
+
+    public GameConfiguration(char hiddenSymbol, Random random, Scanner scanner) {
         this.hiddenSymbol = hiddenSymbol;
         this.random = random;
+        this.scanner = scanner;
     }
 
     public List<GameAction> configureActions() {
@@ -32,5 +36,9 @@ public class GameConfiguration {
     public Word configureWord() {
         var repository = new StaticWordStore(random, hiddenSymbol);
         return repository.getRandomWord();
+    }
+
+    public Scanner getScanner() {
+        return scanner;
     }
 }

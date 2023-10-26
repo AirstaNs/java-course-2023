@@ -5,6 +5,7 @@ import edu.project1.game.GameConfiguration;
 import edu.project1.game.GameMessagesPrinter;
 import edu.project1.model.Player;
 import java.util.Random;
+import java.util.Scanner;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -15,16 +16,19 @@ public class Main {
 
     private static final Random RANDOM = new Random();
 
+    private static final Scanner SCANNER = new Scanner(System.in);
+
     private Main() {}
 
     public static void main(String[] args) {
-        var config = new GameConfiguration(HIDDEN_SYMBOL, RANDOM);
+        var config = new GameConfiguration(HIDDEN_SYMBOL, RANDOM, SCANNER);
         var gameActions = config.configureActions();
         var word = config.configureWord();
 
         var printer = new GameMessagesPrinter(LOGGER);
-        var consoleHangman = new ConsoleHangman(gameActions, printer);
         var player = new Player(MAX_ATTEMPTS);
-        consoleHangman.start(word, player);
+        try (var consoleHangman = new ConsoleHangman(gameActions, printer, config.getScanner())) {
+            consoleHangman.start(word, player);
+        }
     }
 }

@@ -4,6 +4,7 @@ import edu.project1.action.ExitAction;
 import edu.project1.action.GuessLetterAction;
 import edu.project1.game.GameConfiguration;
 import java.util.Random;
+import java.util.Scanner;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -13,9 +14,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class GameConfigurationTest {
     private GameConfiguration configuration;
 
+
     @BeforeEach
     public void setUp() {
-        configuration = new GameConfiguration('_', new Random());
+        configuration = new GameConfiguration('_', new Random(), new Scanner(System.in));
     }
 
     @Test
