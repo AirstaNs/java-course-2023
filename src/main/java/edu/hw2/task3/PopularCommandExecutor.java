@@ -18,7 +18,7 @@ public final class PopularCommandExecutor {
     }
 
     void tryExecute(String command) {
-        Throwable cause = new Throwable();
+        Exception cause = new Exception();
         for (int i = 0; i < maxAttempts; i++) {
             try (Connection connection = manager.getConnection()) {
                 connection.execute(command);
@@ -28,6 +28,6 @@ public final class PopularCommandExecutor {
             }
         }
         String msg = String.format("Failed after %s attempts", maxAttempts);
-        throw new ConnectionException(msg, cause.getCause());
+        throw new ConnectionException(msg, cause);
     }
 }
