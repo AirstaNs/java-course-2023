@@ -28,6 +28,8 @@ public class Task4 {
     }
 
     public static String convertToRoman(int number) {
+        validateNumber(number);
+
         int copyNumber = number;
         StringBuilder result = new StringBuilder();
 
@@ -41,5 +43,11 @@ public class Task4 {
             }
         }
         return result.toString();
+    }
+
+    private static void validateNumber(int number) {
+        if (number <= 0 || number > 3999) {
+            throw new IllegalArgumentException("Number out of range for Roman representation");
+        }
     }
 }

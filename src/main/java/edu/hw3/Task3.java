@@ -15,8 +15,7 @@ public class Task3 {
 
         Map<T, Integer> freqMap = new HashMap<>();
         for (T s : list) {
-            int count = freqMap.getOrDefault(s, 0);
-            freqMap.put(s, count + 1);
+            freqMap.merge(s, 1, Integer::sum);
         }
         return freqMap;
     }
