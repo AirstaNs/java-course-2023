@@ -5,7 +5,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -141,7 +140,7 @@ public class TaskTest {
     public void testTask7() {
         // Given
         List<Animal> animals = new ArrayList<>(animalData.values());
-        animals.add(new Animal("Dog2", Animal.Type.DOG, Animal.Sex.M, 7, 55, 25, false));  // Добавим еще одну старую собаку
+        animals.add(new Animal("Dog2", Animal.Type.DOG, Animal.Sex.M, 7, 55, 25, false));
 
         // When
         Animal result1 = Tasks.task7(animals, 1);
@@ -158,7 +157,7 @@ public class TaskTest {
         // Given
         List<Animal> animals = new ArrayList<>(animalData.values());
         String longestName = "Fish2";
-        animals.add(new Animal(longestName, Animal.Type.FISH, Animal.Sex.F, 1, 5, 7, false));  // Этот рыба тяжелее и ниже
+        animals.add(new Animal(longestName, Animal.Type.FISH, Animal.Sex.F, 1, 5, 7, false));  // Эта рыба тяжелее и ниже
 
         // When
         Optional<Animal> result = Tasks.task8(animals, 10);
