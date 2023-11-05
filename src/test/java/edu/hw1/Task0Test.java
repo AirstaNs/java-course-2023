@@ -13,25 +13,18 @@ public class Task0Test {
 
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final PrintStream originalOut = System.out;
-    @BeforeEach
-    public void setUpStreams() {
-        System.setOut(new PrintStream(outContent, true, StandardCharsets.UTF_8));
-    }
-
-    @AfterEach
-    public void restoreStreams() {
-        System.setOut(originalOut);
-    }
 
     @Test
     @DisplayName("Проверка вывода сообщения 'Привет, мир!'")
     public void testPrintHelloWorld() {
+        System.setOut(new PrintStream(outContent, true, StandardCharsets.UTF_8));
         String input = "Привет, мир!";
         Task0.printHelloWorld();
 
         String actualOutput = outContent.toString(StandardCharsets.UTF_8).trim();
         System.out.println("Actual output: '" + actualOutput + "'");
         assertTrue(actualOutput.contains(input));
+        System.setOut(originalOut);
     }
 
 }
