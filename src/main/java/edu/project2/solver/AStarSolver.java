@@ -8,8 +8,8 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
-import java.util.PriorityQueue;
 import java.util.Set;
+import java.util.TreeSet;
 
 public class AStarSolver implements MazeSolver {
 
@@ -22,14 +22,15 @@ public class AStarSolver implements MazeSolver {
         final Map<Point, Point> cameFrom = new HashMap<>();
         Map<Point, Double> gScore = new HashMap<>();
         Map<Point, Double> fScore = new HashMap<>();
-        PriorityQueue<Point> openSet = new PriorityQueue<>(Comparator.comparingDouble(fScore::get));
+
+        TreeSet<Point> openSet = new TreeSet<>(new PointComparator(fScore));
 
         openSet.add(start);
         gScore.put(start, 0.0);
         fScore.put(start, heuristicCostEstimate(start, end));
 
         while (!openSet.isEmpty()) {
-            Point current = openSet.poll();
+            Point current = openSet.pollFirst();
 
             if (current.equals(end)) {
                 return reconstructPath(cameFrom, current);
@@ -41,9 +42,7 @@ public class AStarSolver implements MazeSolver {
                     cameFrom.put(neighbor, current);
                     gScore.put(neighbor, tentativeGScore);
                     fScore.put(neighbor, tentativeGScore + heuristicCostEstimate(neighbor, end));
-                    if (!openSet.contains(neighbor)) {
-                        openSet.add(neighbor);
-                    }
+                    openSet.add(neighbor);
                 }
             }
         }
@@ -69,4 +68,25 @@ public class AStarSolver implements MazeSolver {
         return path;
     }
 
+    private record PointComparator(Map<Point, Double> fScore) implements Comparator<Point> {
+        @Override
+        public int compare(Point p1, Point p2) {
+            double f1 = fScore.getOrDefault(p1, Double.MAX_VALUE);
+            double f2 = fScore.getOrDefault(p2, Double.MAX_VALUE);
+
+            int result = Double.compare(f1, f2);
+            if (result == 0) {
+                result = comparePointsDefault(p1, p2);
+            }
+            return result;
+        }
+
+        private int comparePointsDefault(Point p1, Point p2) {
+            if (p1.x != p2.x) {
+                return Integer.compare(p1.x, p2.x);
+            } else {
+                return Integer.compare(p1.y, p2.y);
+            }
+        }
+    }
 }
