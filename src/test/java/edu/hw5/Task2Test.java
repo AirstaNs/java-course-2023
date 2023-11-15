@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class Task2Test {
 
@@ -15,14 +16,14 @@ public class Task2Test {
     public void testFindFridays13() {
         // Given
         int year = 2024;
+        int startMonth = 1;
+        int endMonth = 12;
 
         // When
-        List<LocalDate> result = Task2.findFridays13(year);
+        List<LocalDate> result = Task2.findFridays13(year, startMonth, endMonth);
 
         // Then
-        assertEquals(
-            List.of(LocalDate.of(year, 9, 13),
-            LocalDate.of(year, 12, 13)), result);
+        assertEquals(List.of(LocalDate.of(year, 9, 13), LocalDate.of(year, 12, 13)), result);
     }
 
     @Test
@@ -36,5 +37,21 @@ public class Task2Test {
 
         // Then
         assertEquals(LocalDate.of(2023, 5, 13), result);
+    }
+
+    @Test
+    @DisplayName("Должно бросать исключение для недопустимого года")
+    public void testInvalidYear() {
+        // Given
+        int invalidYear = -2023;
+
+        // When & Then
+        assertThrows(IllegalArgumentException.class, () -> Task2.findFridays13(invalidYear, 1, 12));
+    }
+
+    @Test
+    @DisplayName("Должно бросать исключение для недопустимой даты")
+    public void testInvalidDate() {
+        assertThrows(NullPointerException.class, () -> Task2.findNextFriday13(null));
     }
 }
