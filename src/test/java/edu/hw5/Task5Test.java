@@ -14,7 +14,7 @@ public class Task5Test {
     @ValueSource(strings = {"А123ВЕ777", "О777ОО177"})
     public void testIsValidNumber_Valid(String number) {
         // When
-        boolean result = Task5.isValidateNumber(number);
+        boolean result = Task5.isValidNumber(number);
 
         // Then
         assertTrue(result);
@@ -25,7 +25,7 @@ public class Task5Test {
     @ValueSource(strings = {"123АВЕ777", "А123ВГ77", "А123ВЕ7777"})
     public void testIsValidNumber_Invalid(String number) {
         // When
-        boolean result = Task5.isValidateNumber(number);
+        boolean result = Task5.isValidNumber(number);
 
         // Then
         assertFalse(result);
