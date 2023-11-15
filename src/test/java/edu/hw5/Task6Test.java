@@ -49,4 +49,16 @@ public class Task6Test {
         // Then
         assertTrue(result);
     }
+
+    @Test
+    @DisplayName("Должно корректно определять подстроку как регулярное выражение")
+    public void testIsRegexSubstring() {
+        // Given
+        String originalString = "achfdbaabgabcaabg";
+
+        // When & Then
+        assertTrue(Task6.isSubstring(originalString, "a.*b.*c"));
+        assertTrue(Task6.isSubstring(originalString, "a.*b.*c.*"));
+        assertFalse(Task6.isSubstring(originalString, "a.*b.*c.*d"));
+    }
 }
