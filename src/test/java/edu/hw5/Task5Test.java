@@ -11,7 +11,7 @@ public class Task5Test {
 
     @ParameterizedTest
     @DisplayName("Должно возвращать true для правильных номерных знаков")
-    @ValueSource(strings = {"А123ВЕ777", "О777ОО177"})
+    @ValueSource(strings = {"А123ВЕ777", "О777ОО177","А123ВЕ12"})
     public void testIsValidNumber_Valid(String number) {
         // When
         boolean result = Task5.isValidNumber(number);
@@ -22,7 +22,7 @@ public class Task5Test {
 
     @ParameterizedTest
     @DisplayName("Должно возвращать false для неправильных номерных знаков")
-    @ValueSource(strings = {"123АВЕ777", "А123ВГ77", "А123ВЕ7777"})
+    @ValueSource(strings = {"123АВЕ777", "А123ВГ77", "А123ВЕ7777","А000ВЕ777","А123ВЕ00"})
     public void testIsValidNumber_Invalid(String number) {
         // When
         boolean result = Task5.isValidNumber(number);
