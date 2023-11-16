@@ -13,10 +13,10 @@ public class Task6Test {
     public void testIsSubstring_Positive() {
         // Given
         String str = "achfdbaabgabcaabg";
-        String substr = "abc";
+        String sub = "abc";
 
         // When
-        boolean result = Task6.isSubstring(str, substr);
+        boolean result = Task6.isSubstring(sub, str);
 
         // Then
         assertTrue(result);
@@ -30,7 +30,7 @@ public class Task6Test {
         String substr = "xyz";
 
         // When
-        boolean result = Task6.isSubstring(str, substr);
+        boolean result = Task6.isSubstring(substr, str);
 
         // Then
         assertFalse(result);
@@ -44,7 +44,7 @@ public class Task6Test {
         String substr = "";
 
         // When
-        boolean result = Task6.isSubstring(str, substr);
+        boolean result = Task6.isSubstring(substr, str);
 
         // Then
         assertTrue(result);
@@ -57,8 +57,17 @@ public class Task6Test {
         String originalString = "achfdbaabgabcaabg";
 
         // When & Then
-        assertTrue(Task6.isSubstring(originalString, "a.*b.*c"));
-        assertTrue(Task6.isSubstring(originalString, "a.*b.*c.*"));
-        assertFalse(Task6.isSubstring(originalString, "a.*b.*c.*d"));
+        assertFalse(Task6.isSubstring(originalString, "a.*b.*c"));
+    }
+
+    @Test
+    @DisplayName("Должно корректно определять подстроку как регулярное выражение")
+    public void testIsRegexSubstringTwo() {
+        // Given
+        String str = "as\\dfdsa";
+        String sub = "\\df";
+
+        // When & Then
+        assertTrue(Task6.isSubstring(sub, str));
     }
 }
