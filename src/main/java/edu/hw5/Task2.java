@@ -33,9 +33,14 @@ public class Task2 {
 
     public static LocalDate findNextFriday13(LocalDate currentDate) {
         Objects.requireNonNull(currentDate);
-        return currentDate
-            .with(TemporalAdjusters.nextOrSame(DayOfWeek.FRIDAY))
-            .withDayOfMonth(THIRTEEN);
+        LocalDate nextFriday13 = currentDate;
+        do {
+            nextFriday13 =
+                nextFriday13
+                    .with(TemporalAdjusters.firstDayOfNextMonth())
+                    .withDayOfMonth(THIRTEEN);
+        } while (nextFriday13.getDayOfWeek() != DayOfWeek.FRIDAY);
+        return nextFriday13;
     }
 
     private static boolean isValidInput(int year, int startMonth, int endMonth) {
