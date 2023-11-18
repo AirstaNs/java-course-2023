@@ -115,8 +115,4 @@ public class DiskMap implements Map<String, String> {
     public Set<Entry<String, String>> entrySet() {
         return map.entrySet();
     }
-
-    public Path getPath() {
-        return path;
-    }
 }

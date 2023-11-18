@@ -3,7 +3,9 @@ package edu.hw6.task1;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -30,7 +32,7 @@ public class DiskMapTest {
     }
 
     @Test
-    @DisplayName("Тестирование функциональности DiskMap")
+    @DisplayName("Тестирование DiskMap")
     void testDiskMap() {
         // Given
         DiskMap diskMap = new DiskMap(TEST_FILE, StandardCharsets.UTF_8);
@@ -62,5 +64,25 @@ public class DiskMapTest {
 
         assertDoesNotThrow(() -> diskMap.remove("testKey"));
         assertFalse(diskMap.containsKey("testKey"));
+    }
+
+    @TempDir
+    Path tempDir;
+
+    @Test
+    void save_ShouldCorrectlyWriteDataToFile() throws Exception {
+        // Given
+        Path testFilePath = tempDir.resolve("testfile.txt");
+        DiskMap diskMap = new DiskMap(testFilePath, StandardCharsets.UTF_8);
+        diskMap.put("key1", "value1");
+        diskMap.put("key2", "value2");
+
+        // When
+        diskMap.save();
+
+        // Then
+        List<String> lines = Files.readAllLines(testFilePath, StandardCharsets.UTF_8);
+        assertTrue(lines.contains("key1:value1"));
+        assertTrue(lines.contains("key2:value2"));
     }
 }

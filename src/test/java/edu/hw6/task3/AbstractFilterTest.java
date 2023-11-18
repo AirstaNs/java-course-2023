@@ -41,4 +41,17 @@ class AbstractFilterTest {
 
         assertTrue(FileFilters.magicNumber(0x89, 'P', 'N', 'G').accept(magicNumberFile));
     }
+
+    @Test
+    void combinedFilters_ShouldWorkCorrectly() throws IOException {
+        Path largeTextFile = Files.createTempFile(tempDir, "largeTextFile", ".txt");
+        Files.writeString(largeTextFile, String.format("%0" + 2000 + "d", 0));
+
+        AbstractFilter largeFiles = FileFilters.largerThan(1000);
+        AbstractFilter txtFiles = FileFilters.globMatches("*.txt");
+
+        AbstractFilter combinedFilter = largeFiles.and(txtFiles);
+
+        assertTrue(combinedFilter.accept(largeTextFile));
+    }
 }
