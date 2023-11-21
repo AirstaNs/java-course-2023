@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class HackerNews {
+public class HackerNews implements AutoCloseable {
 
     private static final URI TOP_NEWS = URI.create("https://hacker-news.firebaseio.com/v0/topstories.json");
     private static final String NEWS = "https://hacker-news.firebaseio.com/v0/item/%d.json";
@@ -66,5 +66,10 @@ public class HackerNews {
     private String jsonToTitle(String json) {
         Matcher m = TITLE_PATTERN.matcher(json);
         return m.find() ? m.group(1) : "";
+    }
+
+    @Override
+    public void close() {
+        client.close();
     }
 }
