@@ -3,12 +3,12 @@ package edu.hw6.task6;
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
-import java.net.Socket;
+import java.net.ServerSocket;
 import java.net.SocketException;
 import java.util.Map;
 
 @SuppressWarnings({"magicnumber", "regexpsinglelinejava"})
-public final class PortScanner {
+public class PortScanner {
 
     private static final Map<Integer, String> PORTS;
 
@@ -23,9 +23,6 @@ public final class PortScanner {
         );
     }
 
-    private PortScanner() {
-    }
-
     public void scanPorts() {
         System.out.printf("%-10s %-10s %-10s %s%n", "Protocol", "Port", "Status", "Service");
         PORTS.forEach((key, value) -> {
@@ -36,7 +33,7 @@ public final class PortScanner {
         });
     }
 
-    private PortInfo scanPort(int port, PortInfo.Protocol protocol) {
+    public PortInfo scanPort(int port, PortInfo.Protocol protocol) {
         if (protocol == edu.hw6.task6.PortInfo.Protocol.TCP) {
             return scanTCPPort(port);
         } else {
@@ -45,23 +42,22 @@ public final class PortScanner {
     }
 
     private PortInfo scanTCPPort(int port) {
-        var protocol = edu.hw6.task6.PortInfo.Protocol.TCP;
-        final int timeout = 1100;
-        try (Socket socket = new Socket()) {
-            socket.connect(new InetSocketAddress("localhost", port), timeout);
-            return createPortInfo(protocol, port, edu.hw6.task6.PortInfo.Status.OPEN);
-        } catch (IOException ignored) {
+        var protocol = PortInfo.Protocol.TCP;
 
+        try (ServerSocket serverSocket = new ServerSocket()) {
+            serverSocket.bind(new InetSocketAddress("localhost", port));
+            return createPortInfo(protocol, port, PortInfo.Status.CLOSED);
+        } catch (IOException e) {
+            return createPortInfo(protocol, port, PortInfo.Status.OPEN);
         }
-        return createPortInfo(protocol, port, edu.hw6.task6.PortInfo.Status.CLOSED);
     }
 
     private PortInfo scanUDPPort(int port) {
-        PortInfo.Protocol protocol = edu.hw6.task6.PortInfo.Protocol.UDP;
+        PortInfo.Protocol protocol = PortInfo.Protocol.UDP;
         try (DatagramSocket udpSocket = new DatagramSocket(port)) {
-            return createPortInfo(protocol, port, edu.hw6.task6.PortInfo.Status.OPEN);
+            return createPortInfo(protocol, port, PortInfo.Status.OPEN);
         } catch (SocketException e) {
-            return createPortInfo(protocol, port, edu.hw6.task6.PortInfo.Status.CLOSED);
+            return createPortInfo(protocol, port, PortInfo.Status.CLOSED);
         }
     }
 
