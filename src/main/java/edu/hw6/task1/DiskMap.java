@@ -7,10 +7,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -30,25 +30,31 @@ public class DiskMap implements Map<String, String> {
         this.path = path;
         this.charset = charset;
         this.map = new HashMap<>();
+        this.read();
     }
 
-    public void read() {
-        try {
-            List<String> strings = Files.readAllLines(path, charset);
-            strings.forEach(s -> {
-                String[] split = s.split(DELIMITER);
-                map.put(split[0], split[1]);
+    private void read() {
+        try (Stream<String> lines = Files.lines(path, charset)) {
+            lines.forEach(line -> {
+                String[] split = line.split(DELIMITER);
+                if (split.length >= 2) {
+                    map.put(split[0], split[1]);
+                }
             });
         } catch (IOException e) {
-            LOGGER.error(e.getMessage());
+            String message = "Failed to read from disk: ";
+            LOGGER.error(message + e.getMessage());
+            throw new RuntimeException(message, e);
         }
     }
 
     public void save() {
         try (var writer = new PrintWriter(Files.newBufferedWriter(path, charset))) {
             map.forEach((key, value) -> writer.println(key + DELIMITER + value));
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage());
+        } catch (IOException e) {
+            String message = "Failed to save to disk: ";
+            LOGGER.error(message + e.getMessage());
+            throw new RuntimeException(message, e);
         }
     }
 
