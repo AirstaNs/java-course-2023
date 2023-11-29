@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 class SynchronizedDatabaseTest {
@@ -71,8 +70,7 @@ class SynchronizedDatabaseTest {
             executorService.submit(deleteTask);
         }
 
-        executorService.shutdown();
-        executorService.awaitTermination(1, TimeUnit.MINUTES);
+        executorService.close();
 
         // Проверяем, что количество записей в базе данных соответствует ожидаемому
         assertTrue(db.getSize() >= 50 && db.getSize() <= 200);
