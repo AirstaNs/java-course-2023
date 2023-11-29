@@ -6,12 +6,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
-public final class SynchronizedDatabase implements PersonDatabase {
-    private final ReadWriteLock lock = new ReentrantReadWriteLock();
+public abstract class AbstractPersonDatabase implements PersonDatabase {
+
     private final Map<Integer, Person> database = new HashMap<>();
     private final Map<String, Set<Integer>> nameIndex = new HashMap<>();
     private final Map<String, Set<Integer>> addressIndex = new HashMap<>();
@@ -19,29 +17,26 @@ public final class SynchronizedDatabase implements PersonDatabase {
 
     @Override
     public void add(final Person person) {
-        lock.writeLock().lock();
-        try {
-            database.put(person.id(), person);
-            indexPerson(person, nameIndex, person.name());
-            indexPerson(person, addressIndex, person.address());
-            indexPerson(person, phoneIndex, person.phoneNumber());
-        } finally {
-            lock.writeLock().unlock();
+        if (database.containsKey(person.id())) {
+            Person existingPerson = database.get(person.id());
+            removeFromIndex(nameIndex, existingPerson.name(), person.id());
+            removeFromIndex(addressIndex, existingPerson.address(), person.id());
+            removeFromIndex(phoneIndex, existingPerson.phoneNumber(), person.id());
         }
+
+        database.put(person.id(), person);
+        indexPerson(person, nameIndex, person.name());
+        indexPerson(person, addressIndex, person.address());
+        indexPerson(person, phoneIndex, person.phoneNumber());
     }
 
     @Override
     public void delete(int id) {
-        lock.writeLock().lock();
-        try {
-            Person person = database.remove(id);
-            if (person != null) {
-                removeFromIndex(nameIndex, person.name(), id);
-                removeFromIndex(addressIndex, person.address(), id);
-                removeFromIndex(phoneIndex, person.phoneNumber(), id);
-            }
-        } finally {
-            lock.writeLock().unlock();
+        Person person = database.remove(id);
+        if (person != null) {
+            removeFromIndex(nameIndex, person.name(), id);
+            removeFromIndex(addressIndex, person.address(), id);
+            removeFromIndex(phoneIndex, person.phoneNumber(), id);
         }
     }
 
@@ -62,12 +57,7 @@ public final class SynchronizedDatabase implements PersonDatabase {
 
     @Override
     public int getSize() {
-        lock.readLock().lock();
-        try {
-            return database.size();
-        } finally {
-            lock.readLock().unlock();
-        }
+        return database.size();
     }
 
     private void indexPerson(Person person, Map<String, Set<Integer>> index, String key) {
@@ -85,14 +75,9 @@ public final class SynchronizedDatabase implements PersonDatabase {
     }
 
     private List<Person> findByAttribute(Map<String, Set<Integer>> index, String key) {
-        lock.readLock().lock();
-        try {
-            Set<Integer> ids = index.getOrDefault(key, Collections.emptySet());
-            return ids.stream()
-                .map(database::get)
-                .collect(Collectors.toList());
-        } finally {
-            lock.readLock().unlock();
-        }
+        Set<Integer> ids = index.getOrDefault(key, Collections.emptySet());
+        return ids.stream()
+            .map(database::get)
+            .collect(Collectors.toList());
     }
 }

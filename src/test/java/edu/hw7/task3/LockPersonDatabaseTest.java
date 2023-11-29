@@ -9,7 +9,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Stream;
 
-class SynchronizedDatabaseTest {
+class LockPersonDatabaseTest {
 
     private static Stream<Person> personProvider() {
         return Stream.of(
@@ -22,7 +22,7 @@ class SynchronizedDatabaseTest {
     @ParameterizedTest
     @MethodSource("personProvider")
     void testAddAndFind(Person person) {
-        SynchronizedDatabase db = new SynchronizedDatabase();
+        PersonDatabase db = new LockPersonDatabase();
 
         // Given
         db.add(person);
@@ -36,7 +36,7 @@ class SynchronizedDatabaseTest {
     @ParameterizedTest
     @MethodSource("personProvider")
     void testDelete(Person person) {
-        SynchronizedDatabase db = new SynchronizedDatabase();
+        PersonDatabase db = new LockPersonDatabase();
 
         // Given
         db.add(person);
@@ -49,9 +49,9 @@ class SynchronizedDatabaseTest {
     }
 
     @Test
-    void testMultithreading() throws InterruptedException {
+    void testMultithreading(){
         ExecutorService executorService = Executors.newFixedThreadPool(4);
-        SynchronizedDatabase db = new SynchronizedDatabase();
+        PersonDatabase db = new LockPersonDatabase();
 
         Runnable addTask = () -> {
             for (int i = 0; i < 100; i++) {
