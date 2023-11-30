@@ -4,8 +4,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -50,16 +48,14 @@ class PiMonteCarloTest {
             );
     }
 
-
     @ParameterizedTest
     @MethodSource("provideTestParameters")
     public void testPiCalculationPerformance(int totalIterations, int threadCount) {
-        Instant startTime = Instant.now();
+        long startTime = System.nanoTime();
         double pi = PiMonteCarlo.calculatePi(totalIterations, threadCount);
-        Instant endTime = Instant.now();
+        long endTime = System.nanoTime();
 
-        Duration duration = Duration.between(startTime, endTime);
-        double seconds = duration.getSeconds() + duration.getNano() / 1e9;
+        double seconds = (endTime - startTime) / 1e9;
         double error = Math.abs(pi - Math.PI);
 
         System.out.printf("Threads: %d, Iterations: %d, Time: %.2f s, Pi: %f, Error: %.9f%n",

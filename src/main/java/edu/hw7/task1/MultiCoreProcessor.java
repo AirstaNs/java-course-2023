@@ -15,12 +15,11 @@ public class MultiCoreProcessor {
     }
 
     public void executeOperations() {
-        ExecutorService executor = Executors.newFixedThreadPool(CORES);
-
-        for (int i = 0; i < totalOperations; i++) {
-            executor.submit(this::performOperation);
+        try (ExecutorService executor = Executors.newFixedThreadPool(CORES)) {
+            for (int i = 0; i < totalOperations; i++) {
+                executor.submit(this::performOperation);
+            }
         }
-        executor.close();
     }
 
     private void performOperation() {

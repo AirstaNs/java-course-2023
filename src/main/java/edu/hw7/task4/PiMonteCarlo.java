@@ -16,21 +16,21 @@ public final class PiMonteCarlo {
         if (threadCount <= 1) {
             return calculatePiSingleThreaded(totalIterations);
         }
-
-        ExecutorService executor = Executors.newFixedThreadPool(threadCount);
         AtomicLong circleCount = new AtomicLong(0);
         AtomicLong totalCount = new AtomicLong(0);
+        try (ExecutorService executor = Executors.newFixedThreadPool(threadCount)) {
+            int iterationsPerThread = totalIterations / threadCount;
+            int remainder = totalIterations % threadCount;
 
-        for (int i = 0; i < threadCount; i++) {
-            final int iterationsPerThread = totalIterations / threadCount;
-
-            executor.submit(() -> {
-                long points = calculatePointsInCircle(iterationsPerThread);
-                circleCount.addAndGet(points);
-                totalCount.addAndGet(iterationsPerThread);
-            });
+            for (int i = 0; i < threadCount; i++) {
+                final int finalCount = iterationsPerThread + (i < remainder ? 1 : 0);
+                executor.submit(() -> {
+                    long points = calculatePointsInCircle(finalCount);
+                    circleCount.addAndGet(points);
+                    totalCount.addAndGet(finalCount);
+                });
+            }
         }
-        executor.close();
         return FOUR * circleCount.get() / totalCount.get();
     }
 

@@ -49,30 +49,28 @@ class LockPersonDatabaseTest {
     }
 
     @Test
-    void testMultithreading(){
-        ExecutorService executorService = Executors.newFixedThreadPool(4);
-        PersonDatabase db = new LockPersonDatabase();
+    void testMultithreading() {
+        try (ExecutorService executorService = Executors.newFixedThreadPool(4)) {
+            PersonDatabase db = new LockPersonDatabase();
 
-        Runnable addTask = () -> {
-            for (int i = 0; i < 100; i++) {
-                db.add(new Person(i, "Name" + i, "Address" + i, "Phone" + i));
+            Runnable addTask = () -> {
+                for (int i = 0; i < 100; i++) {
+                    db.add(new Person(i, "Name" + i, "Address" + i, "Phone" + i));
+                }
+            };
+
+            Runnable deleteTask = () -> {
+                for (int i = 0; i < 50; i++) {
+                    db.delete(i);
+                }
+            };
+
+            for (int i = 0; i < 2; i++) {
+                executorService.submit(addTask);
+                executorService.submit(deleteTask);
             }
-        };
-
-        Runnable deleteTask = () -> {
-            for (int i = 0; i < 50; i++) {
-                db.delete(i);
-            }
-        };
-
-        for (int i = 0; i < 2; i++) {
-            executorService.submit(addTask);
-            executorService.submit(deleteTask);
+            // Проверяем, что количество записей в базе данных соответствует ожидаемому
+            assertTrue(db.getSize() >= 50 && db.getSize() <= 200);
         }
-
-        executorService.close();
-
-        // Проверяем, что количество записей в базе данных соответствует ожидаемому
-        assertTrue(db.getSize() >= 50 && db.getSize() <= 200);
     }
 }
