@@ -1,90 +1,53 @@
 package edu.hw8.task3;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.HexFormat;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class PasswordCracker {
-
-    private static final String ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyz";
-    private static final int ALPHABET_SIZE = ALPHABET.length();
-    private final int maxLength;
-    private final long maxIndex;
+    private final AtomicReference<String> foundPassword = new AtomicReference<>(null);
     private final AtomicBoolean found = new AtomicBoolean(false);
 
-    public PasswordCracker(int maxLength) {
-        this.maxLength = maxLength;
-        this.maxIndex = calculateMaxIndex();
+    private final PasswordGenerator passwordGenerator;
+
+    public PasswordCracker(PasswordGenerator generator) {
+        this.passwordGenerator = generator;
     }
 
-    private long calculateMaxIndex() {
-        long maxIndex = 0;
-        for (int length = 1; length <= maxLength; length++) {
-            maxIndex += Math.pow(ALPHABET_SIZE, length);
-        }
-        return maxIndex;
-    }
-
-    private String convertToPassword(long index, int length) {
-        StringBuilder password = new StringBuilder();
-        for (int i = 0; i < length; i++) {
-            password.insert(0, ALPHABET.charAt((int) (index % ALPHABET_SIZE)));
-            index /= ALPHABET_SIZE;
-        }
-        return password.toString();
-    }
-
-    private String hashPassword(String password) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            byte[] hashInBytes = md.digest(password.getBytes());
-            return HexFormat.of().formatHex(hashInBytes);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("Error computing hash", e);
-        }
-    }
-
-    public void crackPassword(String targetHash, int numberOfThreads) {
+    public String crackPassword(String targetHash, int numberOfThreads) {
         try (ExecutorService executor = Executors.newFixedThreadPool(numberOfThreads)) {
-            long chunkSize = maxIndex / numberOfThreads;
+            CompletableFuture<?>[] futures = new CompletableFuture[numberOfThreads];
+            long totalCombinations = passwordGenerator.getTotalCombinations();
+            long chunkSize = totalCombinations / numberOfThreads;
 
             for (int i = 0; i < numberOfThreads; i++) {
-                long start = i * chunkSize;
-                long end = (i == numberOfThreads - 1) ? maxIndex : start + chunkSize;
-
-                executor.submit(() -> {
-                    for (long index = start; index < end && !found.get(); index++) {
-                        String password = convertToIndexBasedPassword(index);
-                        if (password != null && hashPassword(password).equals(targetHash)) {
-                            found.set(true);
-                            System.out.println("Password found: " + password);
-                            break;
-                        }
-                    }
-                });
+                final long start = i * chunkSize;
+                final long end = (i == numberOfThreads - 1) ? totalCombinations : start + chunkSize;
+                futures[i] = CompletableFuture.supplyAsync(() -> passwordSearch(targetHash, start, end), executor)
+                                              .thenAccept(result -> {
+                                                  if (result != null) {
+                                                      executor.shutdownNow();
+                                                  }
+                                              });
             }
+
+            CompletableFuture.allOf(futures).join();
+            return foundPassword.get();
         }
     }
 
-    private String convertToIndexBasedPassword(long index) {
-        for (int length = 1; length <= maxLength; length++) {
-            long maxIndexForLength = (long) Math.pow(ALPHABET_SIZE, length);
-            if (index < maxIndexForLength) {
-                return convertToPassword(index, length);
+    private String passwordSearch(String targetHash, long start, long end) {
+        for (long index = start; index < end && !found.get(); index++) {
+            String password = passwordGenerator.convertToIndexBasedPassword(index);
+            if (password != null && HashUtils.hashPassword(password).equals(targetHash)) {
+                found.set(true);
+                foundPassword.set(password);
+                return password;
             }
-            index -= maxIndexForLength;
         }
         return null;
     }
-
-    public static void main(String[] args) {
-        PasswordCracker cracker = new PasswordCracker(1);
-        String targetHash = "45e4812014d83dde5666ebdf5a8ed1ed";
-       cracker.crackPassword(targetHash, 1);
-    }
 }
+
