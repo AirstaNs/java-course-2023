@@ -22,7 +22,7 @@ public class PasswordGenerator {
         return localPowers;
     }
 
-    public String convertToIndexBasedPassword(long index) {
+    public char[] convertToIndexBasedPassword(long index) {
         long copyIndex = index;
         for (int length = 1; length <= maxLength; length++) {
             long maxIndexForLength = powers[length - 1] * ALPHABET_SIZE;
@@ -34,16 +34,16 @@ public class PasswordGenerator {
         return null;
     }
 
-    private String convertToPassword(long index, int length) {
+    private char[] convertToPassword(long index, int length) {
         long copyIndex = index;
-        int copyLength = length;
-        StringBuilder password = new StringBuilder(copyLength);
-        while (copyLength-- > 0) {
-            password.append(ALPHABET.charAt((int) (copyIndex % ALPHABET_SIZE)));
+        char[] passwordChars = new char[length];
+        for (int i = length - 1; i >= 0; i--) {
+            passwordChars[i] = ALPHABET.charAt((int) (copyIndex % ALPHABET_SIZE));
             copyIndex /= ALPHABET_SIZE;
         }
-        return password.toString();
+        return passwordChars;
     }
+
 
     public long getTotalCombinations() {
         return totalCombinations;
