@@ -47,18 +47,17 @@ public class FixedThreadPool implements ThreadPool, Executor {
     public void close() {
         final int timeout = 4;
         isRunning = false;
-        if (taskQueue.isEmpty()) {
-            return;
-        }
-        try {
-            if (!latch.await(timeout, TimeUnit.SECONDS)) {
-                taskQueue.clear();
+        if (!taskQueue.isEmpty()) {
+            try {
+                if (!latch.await(timeout, TimeUnit.SECONDS)) {
+                    taskQueue.clear();
+                }
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } finally {
-            Arrays.stream(threads).forEach(Thread::interrupt);
         }
+        // прерывает ожидание потоков, если нет задач в очереди или истек timeout
+        Arrays.stream(threads).forEach(Thread::interrupt);
     }
 
     private final class Worker extends Thread {
