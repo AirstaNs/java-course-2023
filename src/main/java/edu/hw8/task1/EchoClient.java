@@ -1,8 +1,8 @@
 package edu.hw8.task1;
 
+import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.IOException;
 import java.net.Socket;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -28,25 +28,12 @@ public class EchoClient {
 
     private String sendNewConnection(String quote) {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
-             DataInputStream input = new DataInputStream(socket.getInputStream());
-             DataOutputStream output = new DataOutputStream(socket.getOutputStream())) {
+             DataOutputStream output = new DataOutputStream(socket.getOutputStream());
+             DataInputStream input = new DataInputStream(new BufferedInputStream(socket.getInputStream()))) {
             output.writeUTF(quote);
-            this.waitResponse(input);
             return input.readUTF();
-
         } catch (Exception e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    private void waitResponse(DataInputStream input) throws IOException {
-        final int wait = 800;
-        while (input.available() == 0) {
-            try {
-                Thread.sleep(wait);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
         }
     }
 }
