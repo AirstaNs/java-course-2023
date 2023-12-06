@@ -6,16 +6,23 @@ import java.util.HexFormat;
 
 public final class HashUtils {
 
+    private static final HexFormat FORMAT = HexFormat.of();
+
+    private static final ThreadLocal<MessageDigest> MESSAGE_DIGEST_THREAD_LOCAL = ThreadLocal.withInitial(() -> {
+        try {
+            return MessageDigest.getInstance("MD5");
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException("Could not create MessageDigest instance", e);
+        }
+    });
+
     private HashUtils() {
     }
 
     public static String hashPassword(String password) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            byte[] hashInBytes = md.digest(password.getBytes());
-            return HexFormat.of().formatHex(hashInBytes);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("Error computing hash", e);
-        }
+        MessageDigest md = MESSAGE_DIGEST_THREAD_LOCAL.get();
+        md.reset();
+        byte[] hashInBytes = md.digest(password.getBytes());
+        return FORMAT.formatHex(hashInBytes);
     }
 }

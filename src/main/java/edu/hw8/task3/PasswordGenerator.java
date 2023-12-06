@@ -36,9 +36,10 @@ public class PasswordGenerator {
 
     private String convertToPassword(long index, int length) {
         long copyIndex = index;
-        StringBuilder password = new StringBuilder();
-        for (int i = 0; i < length; i++) {
-            password.insert(0, ALPHABET.charAt((int) (copyIndex % ALPHABET_SIZE)));
+        int copyLength = length;
+        StringBuilder password = new StringBuilder(copyLength);
+        while (copyLength-- > 0) {
+            password.append(ALPHABET.charAt((int) (copyIndex % ALPHABET_SIZE)));
             copyIndex /= ALPHABET_SIZE;
         }
         return password.toString();
