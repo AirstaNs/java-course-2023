@@ -7,7 +7,6 @@ import edu.project2.renderer.ConsolePrinter;
 import edu.project2.renderer.MazeRenderer;
 import edu.project2.renderer.Renderer;
 import edu.project2.renderer.RenderingConfig;
-import edu.project2.solver.AStarSolver;
 import java.awt.Point;
 import java.util.Random;
 
