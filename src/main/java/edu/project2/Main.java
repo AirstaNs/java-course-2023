@@ -1,5 +1,6 @@
 package edu.project2;
 
+import edu.hw9.task3.ConcurrentDFSSolver;
 import edu.project2.generator.PrimMazeGenerator;
 import edu.project2.model.MazeDimensions;
 import edu.project2.renderer.ConsolePrinter;
@@ -27,7 +28,7 @@ public final class Main {
         Point end = new Point(HEIGHT - 2, WIDTH - 2);
 
         Renderer renderer = new MazeRenderer(new ConsolePrinter(new RenderingConfig()));
-        MazeManager mazeManager = new MazeManager(primMazeGenerator, new AStarSolver(), renderer);
+        MazeManager mazeManager = new MazeManager(primMazeGenerator, new ConcurrentDFSSolver(), renderer);
         mazeManager.generate();
         mazeManager.render(false);
         System.out.println("===============================================================");
