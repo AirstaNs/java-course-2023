@@ -1,20 +1,27 @@
 package edu.hw9.task1;
 
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.atomic.DoubleAdder;
 import java.util.concurrent.atomic.LongAdder;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class Metric {
     private final DoubleAdder sum = new DoubleAdder();
     private final LongAdder count = new LongAdder();
-    private final AtomicReference<Double> min = new AtomicReference<>(Double.POSITIVE_INFINITY);
-    private final AtomicReference<Double> max = new AtomicReference<>(Double.NEGATIVE_INFINITY);
+    private double min = Double.POSITIVE_INFINITY;
+    private double max = Double.NEGATIVE_INFINITY;
+    private final ReadWriteLock lock = new ReentrantReadWriteLock();
 
     public void add(double value) {
-        sum.add(value);
-        count.increment();
-        min.getAndUpdate(currentMin -> Math.min(currentMin, value));
-        max.getAndUpdate(currentMax -> Math.max(currentMax, value));
+        lock.writeLock().lock();
+        try {
+            sum.add(value);
+            count.increment();
+            min = Math.min(min, value);
+            max = Math.max(max, value);
+        } finally {
+            lock.writeLock().unlock();
+        }
     }
 
     public double getAverage() {
@@ -27,10 +34,20 @@ public class Metric {
     }
 
     public double getMin() {
-        return min.get();
+        lock.readLock().lock();
+        try {
+            return min;
+        } finally {
+            lock.readLock().unlock();
+        }
     }
 
     public double getMax() {
-        return max.get();
+        lock.readLock().lock();
+        try {
+            return max;
+        } finally {
+            lock.readLock().unlock();
+        }
     }
 }

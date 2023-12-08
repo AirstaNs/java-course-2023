@@ -1,5 +1,6 @@
 package edu.hw9.task1;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -30,6 +31,6 @@ public class StatsCollector {
     }
 
     public Set<Map.Entry<String, Metric>> stats() {
-        return metrics.entrySet();
+        return Collections.unmodifiableSet(metrics.entrySet());
     }
 }
