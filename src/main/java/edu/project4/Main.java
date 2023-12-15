@@ -18,14 +18,13 @@ public final class Main {
     }
 
     public static void main(String[] args) throws IOException {
-        try (var renderer = new ParallelRenderer(Runtime.getRuntime().availableProcessors(), CONFIG)) {
-            LOGGER.info("start generating fractals");
-            var fractal = ImageFractal.create(CONFIG.getImageWidth(), CONFIG.getImageHeight());
-            fractal = renderer.render(fractal);
+        var renderer = new ParallelRenderer(Runtime.getRuntime().availableProcessors(), CONFIG);
+        LOGGER.info("start generating fractals");
+        var fractal = ImageFractal.create(CONFIG.getImageWidth(), CONFIG.getImageHeight());
+        fractal = renderer.render(fractal);
 
-            new GammaCorrectionProcessor().process(fractal);
-            ImageSaver.save(fractal, CONFIG.getOutputFolder(), ImageFormat.JPEG);
-            LOGGER.info("end of generation");
-        }
+        new GammaCorrectionProcessor().process(fractal);
+        ImageSaver.save(fractal, CONFIG.getOutputFolder(), ImageFormat.JPEG);
+        LOGGER.info("end of generation");
     }
 }

@@ -36,13 +36,12 @@ class IntegrationTest {
             .build();
 
         // When
-        try (var renderer = new ParallelRenderer(Runtime.getRuntime().availableProcessors(), config)) {
-            var fractal = ImageFractal.create(config.getImageWidth(), config.getImageHeight());
-            fractal = renderer.render(fractal);
+        var renderer = new ParallelRenderer(Runtime.getRuntime().availableProcessors(), config);
+        var fractal = ImageFractal.create(config.getImageWidth(), config.getImageHeight());
+        fractal = renderer.render(fractal);
 
-            new GammaCorrectionProcessor().process(fractal);
-            ImageSaver.save(fractal, config.getOutputFolder(), ImageFormat.JPEG);
-        }
+        new GammaCorrectionProcessor().process(fractal);
+        ImageSaver.save(fractal, config.getOutputFolder(), ImageFormat.JPEG);
 
         // Then
         try (Stream<Path> list = Files.list(tempDir)) {
