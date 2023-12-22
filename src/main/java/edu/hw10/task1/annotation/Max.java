@@ -10,5 +10,5 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Inherited
 public @interface Max {
-    String value() default "";
+    int value() default Integer.MAX_VALUE;
 }

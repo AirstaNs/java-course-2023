@@ -17,8 +17,8 @@ public class IntGenerator extends Generator {
         var maxValue = Integer.MAX_VALUE;
         for (var annotation : parameter.getAnnotations()) {
             switch (annotation) {
-                case Min m -> minValue = Integer.parseInt(m.value());
-                case Max m -> maxValue = Integer.parseInt(m.value());
+                case Min m -> minValue = m.value();
+                case Max m -> maxValue = m.value();
                 default -> {
 
                 }

@@ -15,7 +15,7 @@ public final class ClassFactory {
     }
 
     public static ClassFactory create(
-        @NotNull String stringValue, @Min("10") int intValue
+        @NotNull String stringValue, @Min(10) int intValue
     ) {
         return new ClassFactory(stringValue, intValue);
     }

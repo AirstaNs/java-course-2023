@@ -8,11 +8,11 @@ public class ClassMultipleConstructors {
     private final String stringValue;
     private final int intValue;
 
-    public ClassMultipleConstructors(@Max("10") int intValue) {
+    public ClassMultipleConstructors(@Max(10) int intValue) {
         this("", intValue);
     }
 
-    public ClassMultipleConstructors(@NotNull String stringValue, @Min("10") int intValue) {
+    public ClassMultipleConstructors(@NotNull String stringValue, @Min(10) int intValue) {
         this.stringValue = stringValue;
         this.intValue = intValue;
     }
