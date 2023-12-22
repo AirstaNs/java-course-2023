@@ -9,8 +9,8 @@ public class FibCalculatorTest {
 
     @BeforeEach
     public void setUp() {
-        fibCalculator = new FibCalculatorImpl();
-        fibCalculator = CacheProxy.create(fibCalculator, FibCalculator.class);
+        FibCalculator fibCalculatorImpl = new FibCalculatorImpl();
+        fibCalculator = CacheProxy.create(fibCalculatorImpl, FibCalculator.class);
     }
 
     @Test

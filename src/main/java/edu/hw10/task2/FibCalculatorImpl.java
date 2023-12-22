@@ -2,15 +2,11 @@ package edu.hw10.task2;
 
 public class FibCalculatorImpl implements FibCalculator {
     @Override
-    public long fib(int number) {
-        long result;
+    public Long fib(int number) {
         if (number <= 1) {
-            result = number;
+            return (long) number;
         } else {
-            result = fib(number - 1) + fib(number - 2);
+            return fib(number - 1) + fib(number - 2);
         }
-
-        return result;
     }
 }
-

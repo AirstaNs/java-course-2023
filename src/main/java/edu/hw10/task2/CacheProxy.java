@@ -9,18 +9,18 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CacheProxy implements InvocationHandler {
-    private final Object target;
-    private final Map<Method, Map<Integer, Long>> cache = new HashMap<>();
+public class CacheProxy<T> implements InvocationHandler {
+    private final T target;
+    private final Map<Method, Map<Integer, Object>> cache = new HashMap<>();
 
-    private CacheProxy(Object target) {
+    private CacheProxy(T target) {
         this.target = target;
     }
 
-    public static <T> T create(Object target, Class<T> interfaceClass) {
+    public static <T> T create(T target, Class<T> interfaceClass) {
         return (T) java.lang.reflect.Proxy.newProxyInstance(interfaceClass.getClassLoader(),
             new Class<?>[] {interfaceClass},
-            new CacheProxy(target)
+            new CacheProxy<>(target)
         );
     }
 
@@ -40,11 +40,11 @@ public class CacheProxy implements InvocationHandler {
                 return cache.get(method).get(number);
             }
 
-            long result;
+            Object result;
             if (persist && loadFromCache(method, number)) {
                 result = cache.get(method).get(number);
             } else {
-                result = (long) method.invoke(target, args);
+                result = method.invoke(target, args);
                 cache.get(method).put(number, result);
 
                 if (persist) {
@@ -58,7 +58,7 @@ public class CacheProxy implements InvocationHandler {
         }
     }
 
-    private void saveToCache(Method method, int number, long result) {
+    private void saveToCache(Method method, int number, Object result) {
         String cacheFileName = getFileName(method, number);
         Path cacheFilePath = Paths.get(cacheFileName);
 
@@ -82,7 +82,7 @@ public class CacheProxy implements InvocationHandler {
         if (Files.exists(cacheFilePath)) {
             try {
                 String content = Files.readString(cacheFilePath);
-                long result = Long.parseLong(content);
+                Object result = parseResult(content, method.getReturnType());
                 cache.get(method).put(number, result);
                 return true;
             } catch (IOException e) {
@@ -91,5 +91,19 @@ public class CacheProxy implements InvocationHandler {
         }
 
         return false;
+    }
+
+    private <R> R parseResult(String content, Class<R> returnType) {
+        if (returnType == int.class || returnType == Integer.class) {
+            return returnType.cast(Integer.valueOf(content));
+        } else if (returnType == long.class || returnType == Long.class) {
+            return returnType.cast(Long.valueOf(content));
+        } else if (returnType == double.class || returnType == Double.class) {
+            return returnType.cast(Double.valueOf(content));
+        } else if (returnType == boolean.class || returnType == Boolean.class) {
+            return returnType.cast(Boolean.valueOf(content));
+        }
+
+        throw new IllegalArgumentException("Unsupported return type: %s".formatted(returnType));
     }
 }
