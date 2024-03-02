@@ -19,6 +19,7 @@ public class ConsolePrinter {
         System.out.print(config.getPath());
         System.out.print(config.getResetColor());
         System.out.println("hallo");
+        System.out.println("hallo2");
     }
 
     public void printResetColor() {
