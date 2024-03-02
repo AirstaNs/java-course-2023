@@ -18,6 +18,7 @@ public class ConsolePrinter {
         System.out.print(config.getPassageColor() + config.getPathColor());
         System.out.print(config.getPath());
         System.out.print(config.getResetColor());
+        System.out.println("hallo");
     }
 
     public void printResetColor() {
